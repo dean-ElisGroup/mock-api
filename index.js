@@ -1,6 +1,7 @@
 import express from "express";
 const app = express();
 const port = process.env.PORT || 3000;
+import { v4 as uuidv4 } from 'uuid'; 
 
 app.use(express.json());
 
@@ -33,6 +34,21 @@ app.post("/getArticle", (req, res) => {
     res.json(article);
   } else {
     res.status(404).json({ error: `Article '${articleId}' not found` });
+  }
+});
+
+app.post("/login", (req, res) => {
+  const { username, password } = req.body;
+
+  // Dummy check (always succeeds — you can add real logic later)
+  if (username && password) {
+    const token = uuidv4();
+    res.json({
+      message: "Login successful",
+      token: token
+    });
+  } else {
+    res.status(400).json({ error: "Username and password are required" });
   }
 });
 
