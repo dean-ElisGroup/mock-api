@@ -34,6 +34,9 @@ Authenticates a user and returns a session key and profile info.
   "username": "testuser",
   "password": "password123"
 }
+**Successful Response**
+
+```json
 {
   "message": "Login successful",
   "sessionKey": "randomSessionKey",
