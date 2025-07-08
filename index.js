@@ -1,7 +1,6 @@
 import express from "express";
 const app = express();
 const port = process.env.PORT || 3000;
-import { v4 as uuidv4 } from 'uuid'; 
 
 app.use(express.json());
 
@@ -42,7 +41,7 @@ app.post("/login", (req, res) => {
 
   // Dummy check (always succeeds — you can add real logic later)
   if (username && password) {
-    const token = uuidv4();
+    const token = "255364-U81A-9987-P92G";
     res.json({
       message: "Login successful",
       token: token
