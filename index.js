@@ -51,9 +51,12 @@ app.post("/login", (req, res) => {
 
   if (user) {
     const token = "255364-U81A-9987-P92G";
+    const expiresAt = new Date(Date.now() + 6 * 60 * 60 * 1000); // 6 hours
+
     res.json({
       message: "Login successful",
-      token: token
+      token: token,
+      tokenExpiresAt: expiresAt.toISOString()
     });
   } else {
     res.status(401).json({ error: "Invalid username or password" });
