@@ -4,38 +4,31 @@ const app = express();
 const port = process.env.PORT || 3000;
 //import db from "./firebase.js";
 const db = require("./firebase.js");
+const bodyParser = require("body-parser");
 
 app.use(express.json());
 
-const articles = {
-  E435: {
-    articleId: "E435",
-    articleSize: "L",
-    articleDescription: "ZIP POLO - COLLAR - BLUE",
-    articleActualStockQty: "12",
-    locations: [
-      { locationId: "A-114", locationBarcodeId: "123456789" },
-      { locationId: "B-114", locationBarcodeId: "1234567890" }
-    ]
-  },
-  X101: {
-    articleId: "X101",
-    articleSize: "M",
-    articleDescription: "SWEATSHIRT - GREY",
-    articleActualStockQty: "5",
-    locations: [
-      { locationId: "C-200", locationBarcodeId: "222222222" }
-    ]
-  }
-};
+app.use(bodyParser.json());
 
-app.post("/getArticle", (req, res) => {
+app.post("/getArticle", async (req, res) => {
   const { articleId } = req.body;
-  const article = articles[articleId];
-  if (article) {
-    res.json(article);
-  } else {
-    res.status(404).json({ error: `Article '${articleId}' not found` });
+
+  if (!articleId) {
+    return res.status(400).json({ error: "articleId is required in the request body" });
+  }
+
+  try {
+    const snapshot = await db.ref(`articles/${articleId}`).once("value");
+    const article = snapshot.val();
+
+    if (article) {
+      res.json(article);
+    } else {
+      res.status(404).json({ error: `Article '${articleId}' not found` });
+    }
+  } catch (error) {
+    console.error("Error retrieving article:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
