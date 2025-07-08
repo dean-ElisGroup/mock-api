@@ -1,6 +1,7 @@
 import express from "express";
 const app = express();
 const port = process.env.PORT || 3000;
+import db from "./firebase.js";
 
 app.use(express.json());
 
@@ -74,21 +75,25 @@ app.post("/getArticleIn", (req, res) => {
   });
 });
 
-app.post("/updateArticleIn", (req, res) => {
-  const { locationBarcode, articleId, qty } = req.body;
+app.post("/updateArticleQty", async (req, res) => {
+  const { articleId, qty } = req.body;
 
-  if (!locationBarcode || !articleId || !qty) {
-    return res.status(400).json({ error: "Missing required fields" });
+  if (!articleId || qty == null) {
+    return res.status(400).json({ error: "Missing fields" });
   }
 
-  // You could add logic here to update the article in memory/database, if needed
+  try {
+    const ref = db.ref(`articles/${articleId}`);
+    await ref.update({ articleActualStockQty: qty });
 
-  res.status(200).json({
-    message: "Article updated successfully",
-    articleId,
-    locationBarcode,
-    qty
-  });
+    const snapshot = await ref.once("value");
+    res.status(200).json({
+      message: "Article quantity updated",
+      article: snapshot.val()
+    });
+  } catch (err) {
+    res.status(500).json({ error: "Firebase error", details: err.message });
+  }
 });
 
 app.listen(port, () => {
