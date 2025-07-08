@@ -15,5 +15,32 @@ This is a lightweight Node.js + Express backend API that connects to Firebase Re
 ---
 
 ## 📁 Project Structure
+├── index.js # Main Express server
+├── firebase.js # Firebase config (admin SDK)
+├── package.json
+└── README.md
+---
+
+## 🚀 API Endpoints
+
+### POST `/login`
+
+Authenticates a user and returns a session key and profile info.
+
+**Request Body**:
+
+```json
+{
+  "username": "testuser",
+  "password": "password123"
+}
+{
+  "message": "Login successful",
+  "sessionKey": "randomSessionKey",
+  "firstname": "John",
+  "surname": "Doe",
+  "email": "john.doe@example.com"
+}
+
 
 
