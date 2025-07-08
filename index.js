@@ -32,9 +32,6 @@ app.post("/getArticle", async (req, res) => {
   }
 });
 
-const app = express();
-app.use(express.json());
-
 app.post("/login", async (req, res) => {
   const { username, password } = req.body;
 
