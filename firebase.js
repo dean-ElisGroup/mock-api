@@ -3,7 +3,7 @@ import serviceAccount from "./firebase-service-account.json" assert { type: "jso
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://your-project-id.firebaseio.com" // replace with yours
+  databaseURL: ""https://elis-solservices-dev-default-rtdb.europe-west1.firebasedatabase.app" // replace with yours
 });
 
 const db = admin.database();
