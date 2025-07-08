@@ -53,7 +53,7 @@ app.post("/login", async (req, res) => {
       return res.status(401).json({ error: "Invalid credentials" });
     }
 
-    const [userId] = matchedUser;
+    const [userId, userData] = matchedUser;
 
     // Step 3: Generate sessionKey and store it
     const sessionRef = db.ref("sessions").push(); // push generates a key
@@ -61,7 +61,8 @@ app.post("/login", async (req, res) => {
 
     return res.status(200).json({
       message: "Login successful",
-      sessionKey
+      sessionKey,
+      email: userData.email
     });
 
   } catch (err) {
