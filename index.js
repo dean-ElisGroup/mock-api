@@ -1,4 +1,4 @@
-//import express from "express";
+sage//import express from "express";
 const express = require("express");
 const app = express();
 const port = process.env.PORT || 3000;
@@ -41,7 +41,7 @@ app.post("/login", async (req, res) => {
     const users = snapshot.val();
 
     if (!users) {
-      return res.status(500).json({ error: "No users found" });
+      return res.status(500).json({ message: "No users found" });
     }
 
     // Step 2: Find matching user
@@ -50,7 +50,7 @@ app.post("/login", async (req, res) => {
     );
 
     if (!matchedUser) {
-      return res.status(401).json({ error: "Invalid credentials" });
+      return res.status(401).json({ message: "Invalid credentials" });
     }
 
     const [userId, userData] = matchedUser;
@@ -69,7 +69,7 @@ app.post("/login", async (req, res) => {
 
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Login failed due to server error" });
+    res.status(500).json({ message: "Login failed due to server error" });
   }
 });
 
