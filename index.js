@@ -32,27 +32,44 @@ app.post("/getArticle", async (req, res) => {
   }
 });
 
-const users = [
-  { username: "dball", password: "password1" },
-  { username: "mwalkingshaw", password: "password1" }
-];
+const app = express();
+app.use(express.json());
 
-app.post("/login", (req, res) => {
+app.post("/login", async (req, res) => {
   const { username, password } = req.body;
 
-  // Check if user exists and password matches
-  const user = users.find(
-    (u) => u.username === username && u.password === password
-  );
+  try {
+    // Step 1: Get all users
+    const snapshot = await db.ref("users").once("value");
+    const users = snapshot.val();
 
-  if (user) {
-    const token = "255364-U81A-9987-P92G";
-    res.json({
+    if (!users) {
+      return res.status(500).json({ error: "No users found" });
+    }
+
+    // Step 2: Find matching user
+    const matchedUser = Object.entries(users).find(([userId, user]) =>
+      user.username === username && user.password === password
+    );
+
+    if (!matchedUser) {
+      return res.status(401).json({ error: "Invalid credentials" });
+    }
+
+    const [userId] = matchedUser;
+
+    // Step 3: Generate sessionKey and store it
+    const sessionRef = db.ref("sessions").push(); // push generates a key
+    const sessionKey = sessionRef.key;
+
+    return res.status(200).json({
       message: "Login successful",
-      token: token,
+      sessionKey
     });
-  } else {
-    res.status(401).json({ error: "Invalid username or password" });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Login failed due to server error" });
   }
 });
 
