@@ -36,18 +36,27 @@ app.post("/getArticle", (req, res) => {
   }
 });
 
+const users = [
+  { username: "dball", password: "password1" },
+  { username: "mwalkingshaw", password: "password1" }
+];
+
 app.post("/login", (req, res) => {
   const { username, password } = req.body;
 
-  // Dummy check (always succeeds — you can add real logic later)
-  if (username && password) {
+  // Check if user exists and password matches
+  const user = users.find(
+    (u) => u.username === username && u.password === password
+  );
+
+  if (user) {
     const token = "255364-U81A-9987-P92G";
     res.json({
       message: "Login successful",
       token: token
     });
   } else {
-    res.status(400).json({ error: "Username and password are required" });
+    res.status(401).json({ error: "Invalid username or password" });
   }
 });
 
