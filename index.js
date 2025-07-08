@@ -62,6 +62,8 @@ app.post("/login", async (req, res) => {
     return res.status(200).json({
       message: "Login successful",
       sessionKey,
+      firstname: userData.firstname,
+      surname: userData.surname,
       email: userData.email
     });
 
