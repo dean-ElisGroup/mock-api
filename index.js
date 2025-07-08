@@ -60,6 +60,20 @@ app.post("/login", (req, res) => {
   }
 });
 
+app.post("/getArticleIn", (req, res) => {
+  const { locationBarcode, articleId } = req.body;
+
+  if (!locationBarcode || !articleId) {
+    return res.status(400).json({ error: "Missing required fields" });
+  }
+  res.status(200).json({
+    message: "Article successfully found",
+    articleId,
+    locationBarcode,
+    stockQty: "2"
+  });
+});
+
 app.post("/updateArticleIn", (req, res) => {
   const { locationBarcode, articleId, qty } = req.body;
 
