@@ -60,7 +60,7 @@ app.post("/login", (req, res) => {
   }
 });
 
-app.post("/articleIn", (req, res) => {
+app.post("/updateArticleIn", (req, res) => {
   const { locationBarcode, articleId, qty } = req.body;
 
   if (!locationBarcode || !articleId || !qty) {
