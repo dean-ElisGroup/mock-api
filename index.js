@@ -1,7 +1,9 @@
-import express from "express";
+//import express from "express";
 const app = express();
 const port = process.env.PORT || 3000;
-import db from "./firebase.js";
+//import db from "./firebase.js";
+const express = require("express");
+const db = require("./firebase.js");
 
 app.use(express.json());
 
