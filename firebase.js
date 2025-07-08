@@ -6,7 +6,7 @@ const serviceAccount = JSON.parse(
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://<your-project-id>.firebaseio.com" // Replace with your actual URL
+  databaseURL: "https://elis-solservices-dev-default-rtdb.europe-west1.firebasedatabase.app/" // Replace with your actual URL
 });
 
 const db = admin.database();
