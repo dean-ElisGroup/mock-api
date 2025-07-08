@@ -60,6 +60,23 @@ app.post("/login", (req, res) => {
   }
 });
 
+app.post("/articleIn", (req, res) => {
+  const { locationBarcode, articleId, qty } = req.body;
+
+  if (!locationBarcode || !articleId || !qty) {
+    return res.status(400).json({ error: "Missing required fields" });
+  }
+
+  // You could add logic here to update the article in memory/database, if needed
+
+  res.status(200).json({
+    message: "Article updated successfully",
+    articleId,
+    locationBarcode,
+    qty
+  });
+});
+
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
