@@ -64,7 +64,9 @@ app.post("/login", async (req, res) => {
       sessionKey,
       firstname: userData.firstname,
       surname: userData.surname,
-      email: userData.email
+      email: userData.email,
+      country: userData.country,
+      laundry: userData.laundry
     });
 
   } catch (err) {
