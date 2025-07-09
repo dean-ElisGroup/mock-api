@@ -117,7 +117,8 @@ app.post("/getArticleIn", async (req, res) => {
         locationBarcode,
         stockQty: foundArticle.articleActualStockQty,
         locationId: foundArticle.matchedLocation.locationId,
-        articleDescription: foundArticle.articleDescription
+        articleDescription: foundArticle.articleDescription,
+        articleSize: foundArticle.size
       });
     } else {
       return res.status(404).json({ error: "No article found for the given locationBarcode" });
