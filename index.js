@@ -75,18 +75,57 @@ app.post("/login", async (req, res) => {
   }
 });
 
-app.post("/getArticleIn", (req, res) => {
-  const { locationBarcode, articleId } = req.body;
+app.post("/getArticleIn", async (req, res) => {
+  const { locationBarcode } = req.body;
 
-  if (!locationBarcode || !articleId) {
-    return res.status(400).json({ error: "Missing required fields" });
+  if (!locationBarcode) {
+    return res.status(400).json({ error: "Missing locationBarcode field" });
   }
-  res.status(200).json({
-    message: "Article successfully found",
-    articleId,
-    locationBarcode,
-    stockQty: "2"
-  });
+
+  try {
+    const snapshot = await db.ref("articles").once("value");
+    const articles = snapshot.val();
+
+    if (!articles) {
+      return res.status(404).json({ error: "No articles found in the database" });
+    }
+
+    // Search for the article by locationBarcodeId in locations array
+    let foundArticle = null;
+
+    for (const articleId in articles) {
+      const article = articles[articleId];
+      const locations = article.locations || [];
+
+      const match = locations.find(
+        (loc) => loc.locationBarcodeId === locationBarcode
+      );
+
+      if (match) {
+        foundArticle = {
+          ...article,
+          matchedLocation: match
+        };
+        break;
+      }
+    }
+
+    if (foundArticle) {
+      return res.status(200).json({
+        message: "Article successfully found",
+        articleId: foundArticle.articleId,
+        locationBarcode,
+        stockQty: foundArticle.articleActualStockQty,
+        locationId: foundArticle.matchedLocation.locationId,
+        articleDescription: foundArticle.articleDescription
+      });
+    } else {
+      return res.status(404).json({ error: "No article found for the given locationBarcode" });
+    }
+  } catch (err) {
+    console.error("Error in getArticleIn:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
 
 app.post("/updateArticleQty", async (req, res) => {
