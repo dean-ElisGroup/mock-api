@@ -162,7 +162,23 @@ app.post("/updateArticleQty", async (req, res) => {
     res.status(500).json({ error: "Firebase error", details: err.message });
   }
 });
-
+// CODE TO ALLOW ADDING ARTICLE DATA TO FIREBASE REALTIME DB FOR TESTING PURPOSES"
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
+});
+
+app.post("/addArticle", async (req, res) => {
+  const newArticle = req.body;
+
+  if (!newArticle.articleId) {
+    return res.status(400).json({ error: "articleId is required" });
+  }
+
+  try {
+    await db.ref(`articles/${newArticle.articleId}`).set(newArticle);
+    res.status(201).json({ message: "Article added successfully", article: newArticle });
+  } catch (err) {
+    console.error("Error adding article:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
