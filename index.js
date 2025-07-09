@@ -14,20 +14,33 @@ app.post("/getArticle", async (req, res) => {
   const { articleId } = req.body;
 
   if (!articleId) {
-    return res.status(400).json({ error: "articleId is required in the request body" });
+    return res.status(400).json({ error: "Missing articleId in request body" });
   }
 
   try {
-    const snapshot = await db.ref(`articles/${articleId}`).once("value");
-    const article = snapshot.val();
+    const snapshot = await db.ref("articles").once("value");
+    const articles = snapshot.val();
 
-    if (article) {
-      res.json(article);
-    } else {
-      res.status(404).json({ error: `Article '${articleId}' not found` });
+    if (!articles) {
+      return res.status(404).json({ error: "No articles found in database" });
     }
-  } catch (error) {
-    console.error("Error retrieving article:", error);
+
+    // Filter articles where articleId includes the search term
+    const matchedArticles = Object.values(articles).filter(article =>
+      article.articleId.toLowerCase().includes(articleId.toLowerCase())
+    );
+
+    if (matchedArticles.length === 0) {
+      return res.status(404).json({ error: "No articles matched your query" });
+    }
+
+    res.status(200).json({
+      message: `Found ${matchedArticles.length} article(s) matching '${articleId}'`,
+      articles: matchedArticles
+    });
+
+  } catch (err) {
+    console.error("Error searching articles:", err);
     res.status(500).json({ error: "Internal server error" });
   }
 });
