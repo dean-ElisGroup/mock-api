@@ -182,3 +182,50 @@ app.post("/addArticle", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+// ROUTE TO ALLOW ADDING OF A USER TO FIREBASE REALTIME DB FOR TESTING PURPOSES
+app.post("/addUser", async (req, res) => {
+  const {
+    username,
+    password,
+    firstname,
+    surname,
+    email,
+    country,
+    laundry,
+    sessionKey
+  } = req.body;
+
+  // Validate required fields
+  if (!username || !password || !firstname || !surname || !email) {
+    return res.status(400).json({ error: "Missing required user fields" });
+  }
+
+  try {
+    const userRef = db.ref(`users/${username}`);
+    const snapshot = await userRef.once("value");
+
+    if (snapshot.exists()) {
+      return res.status(409).json({ error: "User already exists" });
+    }
+
+    const newUser = {
+      username,
+      password,
+      firstname,
+      surname,
+      email,
+      country: country || "Unknown",
+      laundry: laundry || "Unknown",
+      sessionKey: sessionKey || ""
+    };
+
+    await userRef.set(newUser);
+
+    res.status(201).json({ message: "User added successfully", user: newUser });
+  } catch (error) {
+    console.error("Error adding user:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+
