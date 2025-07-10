@@ -192,10 +192,10 @@ app.post("/addUser", async (req, res) => {
     email,
     country,
     laundry,
-    sessionKey
+    sessionKey,
+    permissions
   } = req.body;
 
-  // Validate required fields
   if (!username || !password || !firstname || !surname || !email) {
     return res.status(400).json({ error: "Missing required user fields" });
   }
@@ -216,7 +216,11 @@ app.post("/addUser", async (req, res) => {
       email,
       country: country || "Unknown",
       laundry: laundry || "Unknown",
-      sessionKey: sessionKey || ""
+      sessionKey: sessionKey || "",
+      permissions: permissions || {
+        warehouse: false,
+        production: false
+      }
     };
 
     await userRef.set(newUser);
